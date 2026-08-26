@@ -7,15 +7,24 @@ class Category:
     category_count = 0
     product_count = 0
 
-    def __init__(
-        self, name: str, description: str, products: list[Product] | None
-    ):
+    def __init__(self, name: str, description: str):
 
         self.name = name
         self.description = description
-        self.products = products if products else []
+        self.__products = []
         Category.category_count += 1
-        Category.product_count += len(self.products)
+        
+
+    # Метод добавления продукта
+    def add_product(self, product: Product) -> None:
+        """Добавляет продукт в приватный список и увеличивает счётчик."""
+        self.__products.append(product)
+        Category.product_count += 1
+
 
     def __repr__(self):
-        return f"Category({self.name}, {self.description}, {self.products})"
+        return (
+            f"Category("
+            f"name={self.name!r}, "
+            f"description={self.description!r})"
+        )
