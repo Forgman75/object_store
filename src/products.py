@@ -9,6 +9,22 @@ class Product:
         self.__price = price
         self.quantity = quantity
 
+
+    @classmethod
+    def new_product(cls, product_data: dict) -> "Product":
+        """
+        Создаёт и возвращает объект Product на основе словаря с параметрами.
+        Ожидается словарь вида:
+        {"name": ..., "price": ..., "description": ..., "quantity": ...}
+        """
+        return cls(
+            name=product_data["name"],
+            price=product_data["price"],
+            description=product_data["description"],
+            quantity=product_data["quantity"],
+        )
+
+
     @property
     def price(self) -> float:
         return self.__price
@@ -19,10 +35,6 @@ class Product:
             print("Цена не должна быть нулевая или отрицательная")
         else:
             self.__price = new_price
-
-
-    
-
 
 
     def __repr__(self):
