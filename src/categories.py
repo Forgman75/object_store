@@ -13,6 +13,7 @@ class Category:
         self.description = description
         self.__products = products if products else []
         Category.category_count += 1
+        Category.product_count += len(self.__products)
         
 
     # Метод добавления продукта
@@ -42,5 +43,6 @@ class Category:
         return (
             f"Category("
             f"name={self.name!r}, "
-            f"description={self.description!r})"
+            f"description={self.description!r}, "
+            f"__products={self.products})"
         )
