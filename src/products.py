@@ -9,21 +9,36 @@ class Product:
         self.__price = price
         self.quantity = quantity
 
-
     @classmethod
-    def new_product(cls, product_data: dict) -> "Product":
+    def new_product(
+        cls, product_data: dict, existing_products: list = None
+    ) -> "Product":
         """
-        Создаёт и возвращает объект Product на основе словаря с параметрами.
-        Ожидается словарь вида:
-        {"name": ..., "price": ..., "description": ..., "quantity": ...}
-        """
-        return cls(
-            name=product_data["name"],
-            price=product_data["price"],
-            description=product_data["description"],
-            quantity=product_data["quantity"],
-        )
+        Создает новый продукт или обновляет существующий.
 
+        :param product_data: Словарь с данными товара
+        :param existing_products: Список существующих товаров
+        для проверки дубликатов
+        :return: Объект Product
+        """
+
+        name = product_data.get("name")
+        description = product_data.get("description")
+        price = product_data.get("price")
+        quantity = product_data.get("quantity")
+
+        # Если передан список товаров, проверяем наличие дубликата
+        if existing_products:
+            for product in existing_products:
+                if product.name == name:
+                    # Товар найден - обновляем количество и цену
+                    product.quantity += quantity
+                    if price > product.price:
+                        product.price = price
+                    return product
+
+        # Если дубликат не найден - создаем новый товар
+        return cls(name, description, price, quantity)
 
     @property
     def price(self) -> float:
@@ -35,7 +50,6 @@ class Product:
             print("Цена не должна быть нулевая или отрицательная")
         else:
             self.__price = new_price
-
 
     def __repr__(self):
         return (
