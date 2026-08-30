@@ -7,21 +7,21 @@ class Category:
     category_count = 0
     product_count = 0
 
-    def __init__(self, name: str, description: str, products: list[Product] | None):
+    def __init__(
+        self, name: str, description: str, products: list[Product] | None
+    ):
 
         self.name = name
         self.description = description
         self.__products = products if products else []
         Category.category_count += 1
         Category.product_count += len(self.__products)
-        
 
     # Метод добавления продукта
     def add_product(self, product: Product) -> None:
         """Добавляет продукт в приватный список и увеличивает счётчик."""
         self.__products.append(product)
         Category.product_count += 1
-
 
     # Геттер списка товаров
     @property
@@ -38,6 +38,15 @@ class Category:
             )
         return result
 
+    @property
+    def product_list(self) -> list:
+        """Возвращает список объектов товаров."""
+        return self.__products
+
+    @property
+    def product_count_instance(self) -> int:
+        """Количество товаров в данной категории."""
+        return len(self.__products)
 
     def __repr__(self):
         return (
