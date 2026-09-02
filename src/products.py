@@ -64,3 +64,10 @@ class Product:
         """Строковое отображение продукта."""
         return f"{self.name}, {self.price} руб. Остаток: {self.quantity} шт."
 
+    def __add__(self, other):
+        """Магический метод сложения. Возвращает сумму произведений цены на количество."""
+        if isinstance(other, Product):
+            return (self.price * self.quantity) + (other.price * other.quantity)
+        raise TypeError("Складывать можно только объекты класса Product")
+
+
