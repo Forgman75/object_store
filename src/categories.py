@@ -30,13 +30,7 @@ class Category:
         Возвращает строку со списком товаров в формате:
         'Название продукта, X руб. Остаток: X шт.\n'
         """
-        result = ""
-        for product in self.__products:
-            result += (
-                f"{product.name}, {product.price} руб. "
-                f"Остаток: {product.quantity} шт.\n"
-            )
-        return result
+        return "\n".join(str(product) for product in self.__products)
 
     @property
     def product_list(self) -> list:
