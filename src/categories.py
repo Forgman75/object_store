@@ -55,3 +55,9 @@ class Category:
             f"description={self.description!r}, "
             f"__products={self.products})"
         )
+
+    def __str__(self):
+        """Строковое отображение категории. 
+        Рассчитывает общее количество товаров на складе (сумма quantity)."""
+        total_quantity = sum(product.quantity for product in self.__products)
+        return f"{self.name}, количество продуктов: {total_quantity} шт."
