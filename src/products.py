@@ -59,3 +59,8 @@ class Product:
             f"__price={self.__price}, "
             f"quantity={self.quantity})"
         )
+
+    def __str__(self):
+        """Строковое отображение продукта."""
+        return f"{self.name}, {self.price} руб. Остаток: {self.quantity} шт."
+
