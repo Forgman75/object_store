@@ -2,12 +2,19 @@ class Product:
     """Класс, представляющий товар."""
 
     def __init__(
-        self, name: str, description: str, price: float, quantity: int
+        self,
+        name: str,
+        description: str,
+        price: float,
+        quantity: int,
+        color: str = "",
+        **kwargs,
     ):
         self.name = name
         self.description = description
         self.__price = price
         self.quantity = quantity
+        self.color = color
 
     @classmethod
     def new_product(
@@ -23,14 +30,13 @@ class Product:
         """
 
         name = product_data.get("name")
-        description = product_data.get("description")
         price = product_data.get("price")
         quantity = product_data.get("quantity")
 
         # Если передан список товаров, проверяем наличие дубликата
         if existing_products:
             for product in existing_products:
-                if product.name == name:
+                if product.name == name and type(product) is cls:
                     # Товар найден - обновляем количество и цену
                     product.quantity += quantity
                     if price > product.price:
@@ -38,7 +44,7 @@ class Product:
                     return product
 
         # Если дубликат не найден - создаем новый товар
-        return cls(name, description, price, quantity)
+        return cls(**product_data)
 
     @property
     def price(self) -> float:
@@ -57,7 +63,8 @@ class Product:
             f"name={self.name!r}, "
             f"description={self.description!r}, "
             f"__price={self.__price}, "
-            f"quantity={self.quantity})"
+            f"quantity={self.quantity}, "
+            f"color={self.color!r})"
         )
 
     def __str__(self):
@@ -66,8 +73,8 @@ class Product:
 
     def __add__(self, other):
         """Магический метод сложения. Возвращает сумму произведений цены на количество."""
-        if isinstance(other, Product):
+        if type(self) is type(other):
             return (self.price * self.quantity) + (other.price * other.quantity)
-        raise TypeError("Складывать можно только объекты класса Product")
+        raise TypeError("Складывать можно только товары одного типа")
 
 
