@@ -211,7 +211,7 @@ def test_add_product_and_integer_raises_error(sample_products):
     """Проверка, что сложение с числом вызывает TypeError."""
     p1, _ = sample_products
     with pytest.raises(
-        TypeError, match="Складывать можно только объекты класса Product"
+        TypeError, match="Складывать можно только товары одного типа"
     ):
         p1 + 100
 
@@ -220,7 +220,7 @@ def test_add_product_and_string_raises_error(sample_products):
     """Проверка, что сложение со строкой вызывает TypeError."""
     p1, _ = sample_products
     with pytest.raises(
-        TypeError, match="Складывать можно только объекты класса Product"
+        TypeError, match="Складывать можно только товары одного типа"
     ):
         p1 + "текст"
 
@@ -229,6 +229,6 @@ def test_add_product_and_none_raises_error(sample_products):
     """Проверка, что сложение с None вызывает TypeError."""
     p1, _ = sample_products
     with pytest.raises(
-        TypeError, match="Складывать можно только объекты класса Product"
+        TypeError, match="Складывать можно только товары одного типа"
     ):
         p1 + None
