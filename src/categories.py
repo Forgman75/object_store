@@ -20,6 +20,11 @@ class Category:
     # Метод добавления продукта
     def add_product(self, product: Product) -> None:
         """Добавляет продукт в приватный список и увеличивает счётчик."""
+        if not isinstance(product, Product):
+            raise TypeError(
+                "Можно добавлять только объекты классов Product или его наследников"
+            )
+
         self.__products.append(product)
         Category.product_count += 1
 
