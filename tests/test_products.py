@@ -1,3 +1,4 @@
+import pytest
 from src.products import Product
 
 
@@ -182,3 +183,52 @@ def test_new_product_creates_new_when_no_duplicate():
     # Исходный список не изменился
     assert existing[0].name == "iPhone"
     assert existing[0].quantity == 5
+
+
+def test_product_str_standard(sample2_products):
+    """Проверка строкового представления обычного продукта."""
+    p1, p2, _ = sample2_products
+    assert str(p1) == "Iphone 15, 100000.0 руб. Остаток: 5 шт."
+    assert str(p2) == "Samsung S24, 80000.0 руб. Остаток: 3 шт."
+
+
+def test_product_str_zero_quantity(sample2_products):
+    """Проверка строкового представления продукта с нулевым остатком."""
+    _, _, p3 = sample2_products
+    assert str(p3) == "MacBook Pro, 250000.0 руб. Остаток: 0 шт."
+
+
+def test_add_two_products(sample2_products):
+    """Проверка сложения двух продуктов (сумма их стоимости на складе)."""
+    p1, p2, _ = sample2_products
+    # p1: 100000.0 * 5 = 500000.0
+    # p2: 80000.0 * 3 = 240000.0
+    # Итого: 740000.0
+    assert p1 + p2 == 740000.0
+
+
+def test_add_product_and_integer_raises_error(sample_products):
+    """Проверка, что сложение с числом вызывает TypeError."""
+    p1, _ = sample_products
+    with pytest.raises(
+        TypeError, match="Складывать можно только объекты класса Product"
+    ):
+        p1 + 100
+
+
+def test_add_product_and_string_raises_error(sample_products):
+    """Проверка, что сложение со строкой вызывает TypeError."""
+    p1, _ = sample_products
+    with pytest.raises(
+        TypeError, match="Складывать можно только объекты класса Product"
+    ):
+        p1 + "текст"
+
+
+def test_add_product_and_none_raises_error(sample_products):
+    """Проверка, что сложение с None вызывает TypeError."""
+    p1, _ = sample_products
+    with pytest.raises(
+        TypeError, match="Складывать можно только объекты класса Product"
+    ):
+        p1 + None

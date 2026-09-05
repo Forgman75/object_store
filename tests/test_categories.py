@@ -1,32 +1,6 @@
 import pytest
 from src.products import Product
-from src.categories import Category
-
-
-@pytest.fixture(autouse=True)
-def reset_counters():
-    """Сбрасывает счётчики перед каждым тестом."""
-    Category.category_count = 0
-    Category.product_count = 0
-    yield
-    # После теста счётчики тоже можно сбросить
-    Category.category_count = 0
-    Category.product_count = 0
-
-
-@pytest.fixture
-def sample_products():
-    """Фикстура с набором товаров."""
-    return [
-        Product("iPhone 15", "512GB", 210000.0, 8),
-        Product("Samsung S23", "256GB", 180000.0, 5),
-    ]
-
-
-@pytest.fixture
-def sample_category(sample_products):
-    """Фикстура с категорией, содержащей товары."""
-    return Category("Смартфоны", "Описание смартфонов", sample_products)
+from src.categories import Category, CategoryIterator
 
 
 def test_category_initialization(sample_products):
@@ -160,3 +134,60 @@ def test_add_multiple_products():
 
     assert category.product_count_instance == 5
     assert Category.product_count == 5
+
+
+def test_category_str_with_products(sample2_category):
+    """Проверка строкового представления категории с товарами.
+    Считается сумма quantity, а не количество наименований."""
+    # 5 (Iphone) + 3 (Samsung) + 0 (MacBook) = 8
+    assert str(sample2_category) == "Электроника, количество продуктов: 8 шт."
+
+
+def test_category_str_empty():
+    """Проверка строкового представления пустой категории."""
+    empty_cat = Category("Пустая", "Без товаров", [])
+    assert str(empty_cat) == "Пустая, количество продуктов: 0 шт."
+
+
+def test_iterator_next_method(sample2_category, sample2_products):
+    """Проверка работы метода __next__ и возврата товаров по одному."""
+    p1, p2, p3 = sample2_products
+    iterator = CategoryIterator(sample2_category)
+
+    assert next(iterator) is p1
+    assert next(iterator) is p2
+    assert next(iterator) is p3
+
+
+def test_iterator_stop_iteration(sample2_category):
+    """Проверка, что после окончания товаров выбрасывается StopIteration."""
+    iterator = CategoryIterator(sample2_category)
+
+    # Пропускаем все 3 товара
+    next(iterator)
+    next(iterator)
+    next(iterator)
+
+    # На 4-й вызов должно упасть с StopIteration
+    with pytest.raises(StopIteration):
+        next(iterator)
+
+
+def test_iterator_in_for_loop(sample2_category, sample2_products):
+    """Проверка, что итератор корректно работает в цикле for."""
+    p1, p2, p3 = sample2_products
+    iterator = CategoryIterator(sample2_category)
+
+    products_from_loop = [product for product in iterator]
+
+    assert len(products_from_loop) == 3
+    assert products_from_loop == [p1, p2, p3]
+
+
+def test_iterator_empty_category():
+    """Проверка итератора для пустой категории."""
+    empty_cat = Category("Пустая", "Без товаров", [])
+    iterator = CategoryIterator(empty_cat)
+
+    with pytest.raises(StopIteration):
+        next(iterator)

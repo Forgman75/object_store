@@ -30,13 +30,7 @@ class Category:
         Возвращает строку со списком товаров в формате:
         'Название продукта, X руб. Остаток: X шт.\n'
         """
-        result = ""
-        for product in self.__products:
-            result += (
-                f"{product.name}, {product.price} руб. "
-                f"Остаток: {product.quantity} шт.\n"
-            )
-        return result
+        return "\n".join(str(product) for product in self.__products)
 
     @property
     def product_list(self) -> list:
@@ -55,3 +49,39 @@ class Category:
             f"description={self.description!r}, "
             f"__products={self.products})"
         )
+
+    def __str__(self):
+        """Строковое отображение категории. 
+        Рассчитывает общее количество товаров на складе (сумма quantity)."""
+        total_quantity = sum(product.quantity for product in self.__products)
+        return f"{self.name}, количество продуктов: {total_quantity} шт."
+
+
+class CategoryIterator:
+    """Итератор для перебора товаров одной категории."""
+
+    def __init__(self, category):
+        """
+        Принимает объект категории и инициализирует итератор.
+        
+        :param category: объект класса Category
+        """
+        self._category = category
+        self._products = category.product_list  # список товаров категории
+        self._index = 0                      # текущая позиция в списке
+
+    def __iter__(self):
+        """Возвращает сам объект итератора."""
+        return self
+
+    def __next__(self):
+        """
+        Возвращает очередной товар категории.
+        Когда товары закончатся — возбуждает StopIteration.
+        """
+        if self._index < len(self._products):
+            product = self._products[self._index]
+            self._index += 1
+            return product
+        else:
+            raise StopIteration

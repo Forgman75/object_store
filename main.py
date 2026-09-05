@@ -1,5 +1,5 @@
 from src.products import Product
-from src.categories import Category
+from src.categories import Category, CategoryIterator
 from src.load_file import load_data_from_json
 
 if __name__ == "__main__":
@@ -20,9 +20,13 @@ if __name__ == "__main__":
 
     print(category1.products)
     product4 = Product('55" QLED 4K', "Фоновая подсветка", 123000.0, 7)
-    category1.add_product(product4)
-    print(category1.products)
-    print(category1.product_count)
+    category2 = Category(
+        "Телевизоры", "Современные телевизоры с поддержкой 4K", []
+    )
+
+    category2.add_product(product4)
+    print(category2.products)
+    print(category2.product_count)
 
     new_product = Product.new_product(
         {
@@ -61,3 +65,26 @@ if __name__ == "__main__":
     # Проверяем глобальные счетчики
     print(f"\nВсего категорий: {Category.category_count}")
     print(f"Всего товаров: {Category.product_count}")
+
+    print(str(product1))
+    print(str(product2))
+    print(str(product3))
+
+    print(str(category1))
+
+    print(category1.products)
+
+    print(product1 + product2)
+    print(product1 + product3)
+    print(product2 + product3)
+
+    iterator = CategoryIterator(category1)
+
+    for product in iterator:
+        print(product)
+
+    print("\n--- Ручной вызов next() ---")
+    it = CategoryIterator(category1)
+    print(next(it))
+    print(next(it))
+    print(next(it))
