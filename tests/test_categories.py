@@ -191,3 +191,37 @@ def test_iterator_empty_category():
 
     with pytest.raises(StopIteration):
         next(iterator)
+
+
+def test_add_valid_products(
+    sample3_category, sample_smartphone, sample_lawn_grass
+):
+    """Проверка успешного добавления допустимых объектов
+    (Product и его наследников)"""
+    base_product = Product("Базовый товар", "Описание", 100.0, 1)
+
+    sample3_category.add_product(sample_smartphone)
+    sample3_category.add_product(sample_lawn_grass)
+    sample3_category.add_product(base_product)
+
+    # Проверяем, что все 3 объекта добавлены
+    assert len(sample3_category.product_list) == 3
+    assert sample_smartphone in sample3_category.product_list
+    assert sample_lawn_grass in sample3_category.product_list
+    assert base_product in sample3_category.product_list
+
+
+def test_add_invalid_products(sample3_category):
+    """Проверка, что метод выбрасывает TypeError при добавлении
+      недопустимых типов"""
+    invalid_items = ["Строка", 123, {"name": "Словарь"}, None, [1, 2, 3]]
+
+    for item in invalid_items:
+        with pytest.raises(
+            TypeError,
+            match=(
+                "Можно добавлять только объекты классов Product "
+                "или его наследников"
+            ),
+        ):
+            sample3_category.add_product(item)
