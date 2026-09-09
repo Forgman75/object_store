@@ -2,12 +2,19 @@ class Product:
     """Класс, представляющий товар."""
 
     def __init__(
-        self, name: str, description: str, price: float, quantity: int
+        self,
+        name: str,
+        description: str,
+        price: float,
+        quantity: int,
+        color: str = "",
+        **kwargs,
     ):
         self.name = name
         self.description = description
         self.__price = price
         self.quantity = quantity
+        self.color = color
 
     @classmethod
     def new_product(
@@ -23,14 +30,13 @@ class Product:
         """
 
         name = product_data.get("name")
-        description = product_data.get("description")
         price = product_data.get("price")
         quantity = product_data.get("quantity")
 
         # Если передан список товаров, проверяем наличие дубликата
         if existing_products:
             for product in existing_products:
-                if product.name == name:
+                if product.name == name and type(product) is cls:
                     # Товар найден - обновляем количество и цену
                     product.quantity += quantity
                     if price > product.price:
@@ -38,7 +44,7 @@ class Product:
                     return product
 
         # Если дубликат не найден - создаем новый товар
-        return cls(name, description, price, quantity)
+        return cls(**product_data)
 
     @property
     def price(self) -> float:
@@ -57,7 +63,8 @@ class Product:
             f"name={self.name!r}, "
             f"description={self.description!r}, "
             f"__price={self.__price}, "
-            f"quantity={self.quantity})"
+            f"quantity={self.quantity}, "
+            f"color={self.color!r})"
         )
 
     def __str__(self):
@@ -66,8 +73,89 @@ class Product:
 
     def __add__(self, other):
         """Магический метод сложения. Возвращает сумму произведений цены на количество."""
-        if isinstance(other, Product):
+        if type(self) is type(other):
             return (self.price * self.quantity) + (other.price * other.quantity)
-        raise TypeError("Складывать можно только объекты класса Product")
+        raise TypeError("Складывать можно только товары одного типа")
 
 
+class Smartphone(Product):
+    """Класс, представляющий смартфон."""
+
+    def __init__(
+        self,
+        name: str,
+        description: str,
+        price: float,
+        quantity: int,
+        efficiency: str,
+        model: str,
+        memory: int,
+        color: str,
+        **kwargs,
+    ):
+        super().__init__(name, description, price, quantity, color)
+        self.efficiency = efficiency
+        self.model = model
+        self.memory = memory
+
+    def __repr__(self):
+        return (
+            f"Smartphone("
+            f"name={self.name!r}, "
+            f"description={self.description!r}, "
+            f"price={self.price}, "
+            f"quantity={self.quantity}, "
+            f"color={self.color!r}, "
+            f"efficiency={self.efficiency!r}, "
+            f"model={self.model!r}, "
+            f"memory={self.memory})"
+        )
+
+    def __str__(self):
+        return (
+            f"{self.name} ({self.model}), "
+            f"{self.efficiency}, "
+            f"{self.memory} ГБ, "
+            f"{self.color}, "
+            f"{self.price} руб. Остаток: {self.quantity} шт."
+        )
+
+
+class LawnGrass(Product):
+    """Класс, представляющий газонную траву."""
+
+    def __init__(
+        self,
+        name: str,
+        description: str,
+        price: float,
+        quantity: int,
+        country: str,
+        germination_period: int,
+        color: str,
+        **kwargs,
+    ):
+        super().__init__(name, description, price, quantity, color)
+        self.country = country
+        self.germination_period = germination_period
+
+    def __repr__(self):
+        return (
+            f"LawnGrass("
+            f"name={self.name!r}, "
+            f"description={self.description!r}, "
+            f"price={self.price}, "
+            f"quantity={self.quantity}, "
+            f"color={self.color!r}, "
+            f"country={self.country!r}, "
+            f"germination_period={self.germination_period})"
+        )
+
+    def __str__(self):
+        return (
+            f"{self.name}, "
+            f"{self.country}, "
+            f"прорастание {self.germination_period} дн., "
+            f"{self.color}, "
+            f"{self.price} руб. Остаток: {self.quantity} шт."
+        )

@@ -1,5 +1,5 @@
 import pytest
-from src.products import Product
+from src.products import Product, Smartphone, LawnGrass
 
 
 def test_price_getter():
@@ -211,7 +211,7 @@ def test_add_product_and_integer_raises_error(sample_products):
     """Проверка, что сложение с числом вызывает TypeError."""
     p1, _ = sample_products
     with pytest.raises(
-        TypeError, match="Складывать можно только объекты класса Product"
+        TypeError, match="Складывать можно только товары одного типа"
     ):
         p1 + 100
 
@@ -220,7 +220,7 @@ def test_add_product_and_string_raises_error(sample_products):
     """Проверка, что сложение со строкой вызывает TypeError."""
     p1, _ = sample_products
     with pytest.raises(
-        TypeError, match="Складывать можно только объекты класса Product"
+        TypeError, match="Складывать можно только товары одного типа"
     ):
         p1 + "текст"
 
@@ -229,6 +229,41 @@ def test_add_product_and_none_raises_error(sample_products):
     """Проверка, что сложение с None вызывает TypeError."""
     p1, _ = sample_products
     with pytest.raises(
-        TypeError, match="Складывать можно только объекты класса Product"
+        TypeError, match="Складывать можно только товары одного типа"
     ):
         p1 + None
+
+
+def test_smartphone_initialization():
+    """Проверка создания экземпляра Smartphone и его атрибутов"""
+    phone = Smartphone(
+        "iPhone 14", "Описание", 80000.0, 5, 95.5, "Pro", 256, "Black"
+    )
+
+    assert phone.name == "iPhone 14"
+    assert phone.price == 80000.0
+    assert phone.quantity == 5
+    # Проверка специфичных атрибутов
+    assert phone.efficiency == 95.5
+    assert phone.model == "Pro"
+    assert phone.memory == 256
+    assert phone.color == "Black"
+    # Проверка наследования
+    assert isinstance(phone, Product)
+
+
+def test_lawn_grass_initialization():
+    """Проверка создания экземпляра LawnGrass и его атрибутов"""
+    grass = LawnGrass(
+        "Трава", "Описание", 500.0, 10, "Россия", "7 дней", "Зеленый"
+    )
+
+    assert grass.name == "Трава"
+    assert grass.price == 500.0
+    assert grass.quantity == 10
+    # Проверка специфичных атрибутов
+    assert grass.country == "Россия"
+    assert grass.germination_period == "7 дней"
+    assert grass.color == "Зеленый"
+    # Проверка наследования
+    assert isinstance(grass, Product)
