@@ -1,20 +1,31 @@
-class Product:
+from src.base_product import BaseProduct
+
+class LogCreationMixin:
+    """
+    Миксин реализует конструктор и логирует создание объекта.
+    """
+    def __init__(self, *args, **kwargs):
+        # Получаем имя именно того класса, объект которого создается
+        class_name = self.__class__.__name__
+        
+        # Преобразуем аргументы в их строковое представление (repr)
+        args_repr = [repr(arg) for arg in args]
+        kwargs_repr = [f"{k}={repr(v)}" for k, v in kwargs.items()]
+        
+        # Собираем все параметры в одну строку через запятую
+        params = ", ".join(args_repr + kwargs_repr)
+        
+        # Печатаем информацию в консоль
+        print(f"{class_name}({params})")
+        
+        # Передаем управление и ВСЕ аргументы дальше по цепочке MRO (в BaseProduct)
+        super().__init__(*args, **kwargs)
+
+
+class Product(LogCreationMixin, BaseProduct):
     """Класс, представляющий товар."""
 
-    def __init__(
-        self,
-        name: str,
-        description: str,
-        price: float,
-        quantity: int,
-        color: str = "",
-        **kwargs,
-    ):
-        self.name = name
-        self.description = description
-        self.__price = price
-        self.quantity = quantity
-        self.color = color
+
 
     @classmethod
     def new_product(
@@ -93,7 +104,14 @@ class Smartphone(Product):
         color: str,
         **kwargs,
     ):
-        super().__init__(name, description, price, quantity, color)
+        super().__init__(
+            name=name,
+            description=description,
+            price=price,
+            quantity=quantity,
+            color=color,
+            **kwargs
+            )
         self.efficiency = efficiency
         self.model = model
         self.memory = memory
@@ -135,7 +153,7 @@ class LawnGrass(Product):
         color: str,
         **kwargs,
     ):
-        super().__init__(name, description, price, quantity, color)
+        super().__init__(name, description, price, quantity, country, germination_period, color)
         self.country = country
         self.germination_period = germination_period
 
