@@ -25,8 +25,6 @@ class LogCreationMixin:
 class Product(LogCreationMixin, BaseProduct):
     """Класс, представляющий товар."""
 
-
-
     @classmethod
     def new_product(
         cls, product_data: dict, existing_products: list = None
