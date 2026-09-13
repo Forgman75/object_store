@@ -151,7 +151,14 @@ class LawnGrass(Product):
         color: str,
         **kwargs,
     ):
-        super().__init__(name, description, price, quantity, country, germination_period, color)
+        super().__init__(
+            name=name,
+            description=description,
+            price=price,
+            quantity=quantity,
+            color=color,
+            **kwargs
+        )
         self.country = country
         self.germination_period = germination_period
 
