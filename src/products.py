@@ -107,6 +107,9 @@ class Smartphone(Product):
             description=description,
             price=price,
             quantity=quantity,
+            efficiency=efficiency,
+            model=model,
+            memory=memory,
             color=color,
             **kwargs
             )
@@ -156,6 +159,8 @@ class LawnGrass(Product):
             description=description,
             price=price,
             quantity=quantity,
+            country=country,
+            germination_period=germination_period,
             color=color,
             **kwargs
         )
