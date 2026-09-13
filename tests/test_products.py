@@ -1,4 +1,5 @@
 import pytest
+import re
 from src.products import Product, Smartphone, LawnGrass
 
 
@@ -267,3 +268,70 @@ def test_lawn_grass_initialization():
     assert grass.color == "Зеленый"
     # Проверка наследования
     assert isinstance(grass, Product)
+
+
+def test_smartphone_creation_logs_to_console(capsys):
+    """При создании Smartphone в консоль выводится строка с параметрами."""
+    Smartphone(
+        "iPhone 15", "Чёрный", 100000.0, 5,
+        "Высокая", "15 Pro", 256, "Чёрный"
+    )
+    captured = capsys.readouterr()
+
+    # Проверяем, что выведено имя класса
+    assert captured.out.startswith("Smartphone(")
+    # Проверяем, что строки обёрнуты в кавычки (как в __repr__)
+    assert "'iPhone 15'" in captured.out
+    assert "'Чёрный'" in captured.out
+    # Проверяем, что числа идут без кавычек
+    assert "100000.0" in captured.out
+    assert "256" in captured.out
+
+
+def test_lawn_grass_creation_logs_to_console(capsys):
+    """При создании LawnGrass в консоль выводится строка с параметрами."""
+    LawnGrass(
+        "Газон", "Зелёная", 500.0, 20,
+        "Россия", 7, "Тёмно-зелёный"
+    )
+    captured = capsys.readouterr()
+
+    assert captured.out.startswith("LawnGrass(")
+    assert "'Газон'" in captured.out
+    assert "500.0" in captured.out
+
+
+def test_mixin_uses_repr_for_strings(capsys):
+    """Строковые параметры должны быть обёрнуты в одинарные кавычки."""
+    Smartphone("Test", "Desc", 1.0, 1, "E", "M", 1, "C")
+    captured = capsys.readouterr()
+
+    # Ищем паттерн: 'Test' (строка в кавычках)
+    assert re.search(r"'Test'", captured.out)
+    # И что число 1.0 идёт без кавычек
+    assert re.search(r"[^']1\.0[^']", captured.out)
+
+
+def test_mixin_logs_kwargs(capsys):
+    """Если параметры переданы как kwargs, они тоже логируются."""
+    Smartphone(
+        name="Phone", description="D", price=100.0, quantity=1,
+        efficiency="E", model="M", memory=64, color="Black"
+    )
+    captured = capsys.readouterr()
+    # В выводе должны быть именованные параметры
+    assert "name=" in captured.out
+    assert "price=" in captured.out
+
+
+def test_mixin_does_not_break_initialization():
+    """Миксин не должен мешать инициализации атрибутов."""
+    phone = Smartphone(
+        "iPhone", "D", 100.0, 2,
+        "High", "Pro", 128, "White"
+    )
+    assert phone.name == "iPhone"
+    assert phone.price == 100.0
+    assert phone.model == "Pro"
+
+
