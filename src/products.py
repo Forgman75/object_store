@@ -1,24 +1,27 @@
 from src.base_product import BaseProduct
 
+
 class LogCreationMixin:
     """
     Миксин реализует конструктор и логирует создание объекта.
     """
+
     def __init__(self, *args, **kwargs):
         # Получаем имя именно того класса, объект которого создается
         class_name = self.__class__.__name__
-        
+
         # Преобразуем аргументы в их строковое представление (repr)
         args_repr = [repr(arg) for arg in args]
         kwargs_repr = [f"{k}={repr(v)}" for k, v in kwargs.items()]
-        
+
         # Собираем все параметры в одну строку через запятую
         params = ", ".join(args_repr + kwargs_repr)
-        
+
         # Печатаем информацию в консоль
         print(f"{class_name}({params})")
-        
-        # Передаем управление и ВСЕ аргументы дальше по цепочке MRO (в BaseProduct)
+
+        # Передаем управление и ВСЕ аргументы дальше по цепочке MRO
+        #  (в BaseProduct)
         super().__init__(*args, **kwargs)
 
 
@@ -81,9 +84,12 @@ class Product(LogCreationMixin, BaseProduct):
         return f"{self.name}, {self.price} руб. Остаток: {self.quantity} шт."
 
     def __add__(self, other):
-        """Магический метод сложения. Возвращает сумму произведений цены на количество."""
+        """Магический метод сложения. Возвращает сумму произведений цены
+        на количество."""
         if type(self) is type(other):
-            return (self.price * self.quantity) + (other.price * other.quantity)
+            return (self.price * self.quantity) + (
+                other.price * other.quantity
+            )
         raise TypeError("Складывать можно только товары одного типа")
 
 
@@ -111,8 +117,8 @@ class Smartphone(Product):
             model=model,
             memory=memory,
             color=color,
-            **kwargs
-            )
+            **kwargs,
+        )
         self.efficiency = efficiency
         self.model = model
         self.memory = memory
@@ -162,7 +168,7 @@ class LawnGrass(Product):
             country=country,
             germination_period=germination_period,
             color=color,
-            **kwargs
+            **kwargs,
         )
         self.country = country
         self.germination_period = germination_period

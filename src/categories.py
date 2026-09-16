@@ -10,7 +10,10 @@ class Category(BaseInfo):
     product_count = 0
 
     def __init__(
-        self, name: str, description: str, products: Optional[list[Product]]=None
+        self,
+        name: str,
+        description: str,
+        products: Optional[list[Product]] = None,
     ):
 
         super().__init__(name, description)
@@ -23,7 +26,8 @@ class Category(BaseInfo):
         """Добавляет продукт в приватный список и увеличивает счётчик."""
         if not isinstance(product, Product):
             raise TypeError(
-                "Можно добавлять только объекты классов Product или его наследников"
+                "Можно добавлять только объекты классов Product"
+                " или его наследников"
             )
 
         self.__products.append(product)
@@ -57,7 +61,7 @@ class Category(BaseInfo):
         )
 
     def __str__(self):
-        """Строковое отображение категории. 
+        """Строковое отображение категории.
         Рассчитывает общее количество товаров на складе (сумма quantity)."""
         total_quantity = sum(product.quantity for product in self.__products)
         return f"{self.name}, количество продуктов: {total_quantity} шт."
@@ -69,12 +73,12 @@ class CategoryIterator:
     def __init__(self, category):
         """
         Принимает объект категории и инициализирует итератор.
-        
+
         :param category: объект класса Category
         """
         self._category = category
         self._products = category.product_list  # список товаров категории
-        self._index = 0                      # текущая позиция в списке
+        self._index = 0  # текущая позиция в списке
 
     def __iter__(self):
         """Возвращает сам объект итератора."""
@@ -99,21 +103,32 @@ class Order(BaseInfo):
     В заказе может быть указан только один товар.
     """
 
-    def __init__(self, product: Product, quantity: int, name: str = "", description: str = ""):
+    def __init__(
+        self,
+        product: Product,
+        quantity: int,
+        name: str = "",
+        description: str = "",
+    ):
 
         if not isinstance(product, Product):
-            raise TypeError("В заказе может быть указан только товар класса Product или его наследников")
+            raise TypeError(
+                "В заказе может быть указан только товар класса Product"
+                " или его наследников"
+            )
         if quantity <= 0:
             raise ValueError("Количество товара должно быть больше нуля")
-        
+
         # Если имя/описание не переданы — формируем их автоматически
         if not name:
             name = f"Заказ на {product.name}"
         if not description:
-            description = f"Покупка товара '{product.name}' в количестве {quantity} шт."
+            description = (
+                f"Покупка товара '{product.name}' в количестве {quantity} шт."
+            )
 
         super().__init__(name, description)
-        
+
         self.product = product
         self.quantity = quantity
 
@@ -133,4 +148,3 @@ class Order(BaseInfo):
             f"Order(name={self.name!r}, product={self.product.name!r}, "
             f"quantity={self.quantity}, total_amount={self.total_amount})"
         )
-

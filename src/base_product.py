@@ -5,17 +5,17 @@ class BaseProduct(ABC):
     """
     Абстрактный базовый класс
     """
-    
+
     def __init__(
-            self,
-            name: str,
-            description: str,
-            price: float,
-            quantity: int,
-            color: str="",
-            *args,
-            **kwargs,
-            ):
+        self,
+        name: str,
+        description: str,
+        price: float,
+        quantity: int,
+        color: str = "",
+        *args,
+        **kwargs,
+    ):
         self.name = name
         self.description = description
         self.price = price
@@ -39,4 +39,3 @@ class BaseProduct(ABC):
     @abstractmethod
     def __add__(self, other):
         pass
-

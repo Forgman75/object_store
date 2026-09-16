@@ -1,5 +1,6 @@
 from src.products import Product, Smartphone, LawnGrass
-from src.categories import Category, CategoryIterator
+from src.categories import Category, CategoryIterator, Order
+from src.base_info import BaseInfo
 from src.load_file import load_data_from_json
 
 if __name__ == "__main__":
@@ -15,8 +16,8 @@ if __name__ == "__main__":
     # noqa: W504
     category1 = Category(
         "Смартфоны",
-        "Смартфоны, как средство не только коммуникации, " +
-        "но и получения дополнительных функций для удобства жизни",
+        "Смартфоны, как средство не только коммуникации, "
+        + "но и получения дополнительных функций для удобства жизни",
         [product1, product2, product3],
     )
 
@@ -218,3 +219,47 @@ if __name__ == "__main__":
         print("Возникла ошибка TypeError при добавлении не продукта")
     else:
         print("Не возникла ошибка TypeError при добавлении не продукта")
+
+    print("--- Создаем объекты ---")
+    # Сработает миксин, выведет все параметры в стиле __repr__
+    phone1 = Smartphone(
+        "iPhone 15", "Черный", 100000.0, 5, "Высокая", "15 Pro", 256, "Черный"
+    )
+    grass1 = LawnGrass(
+        "Газонная трава",
+        "Зеленая",
+        500.0,
+        20,
+        "Россия",
+        "7 дней",
+        "Темно-зеленый",
+    )
+
+    print("\n--- Проверка функциональности ---")
+    print(phone1)
+    print(grass1)
+
+    print("\n--- Создаём категорию ---")
+    electronics = Category("Электроника", "Техника для дома")
+    electronics.add_product(phone1)
+    print(electronics)
+    print(electronics.product_list)
+
+    print("\n--- Создаём заказы ---")
+    order1 = Order(phone1, 2)
+    order2 = Order(grass1, 10, name="Заказ №1", description="Для дачи")
+
+    print(order1)
+    print(order2)
+
+    print("\n--- Проверка общих свойств ---")
+    print(
+        f"Категория: name='{electronics.name}', description='{electronics.description}'"
+    )
+    print(
+        f"Заказ:     name='{order1.name}', description='{order1.description}'"
+    )
+
+    print("\n--- Проверка наследования от BaseInfo ---")
+    print(f"Category наследует BaseInfo: {issubclass(Category, BaseInfo)}")
+    print(f"Order наследует BaseInfo:    {issubclass(Order, BaseInfo)}")
