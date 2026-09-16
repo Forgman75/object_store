@@ -273,8 +273,7 @@ def test_lawn_grass_initialization():
 def test_smartphone_creation_logs_to_console(capsys):
     """При создании Smartphone в консоль выводится строка с параметрами."""
     Smartphone(
-        "iPhone 15", "Чёрный", 100000.0, 5,
-        "Высокая", "15 Pro", 256, "Чёрный"
+        "iPhone 15", "Чёрный", 100000.0, 5, "Высокая", "15 Pro", 256, "Чёрный"
     )
     captured = capsys.readouterr()
 
@@ -290,10 +289,7 @@ def test_smartphone_creation_logs_to_console(capsys):
 
 def test_lawn_grass_creation_logs_to_console(capsys):
     """При создании LawnGrass в консоль выводится строка с параметрами."""
-    LawnGrass(
-        "Газон", "Зелёная", 500.0, 20,
-        "Россия", 7, "Тёмно-зелёный"
-    )
+    LawnGrass("Газон", "Зелёная", 500.0, 20, "Россия", 7, "Тёмно-зелёный")
     captured = capsys.readouterr()
 
     assert captured.out.startswith("LawnGrass(")
@@ -315,8 +311,14 @@ def test_mixin_uses_repr_for_strings(capsys):
 def test_mixin_logs_kwargs(capsys):
     """Если параметры переданы как kwargs, они тоже логируются."""
     Smartphone(
-        name="Phone", description="D", price=100.0, quantity=1,
-        efficiency="E", model="M", memory=64, color="Black"
+        name="Phone",
+        description="D",
+        price=100.0,
+        quantity=1,
+        efficiency="E",
+        model="M",
+        memory=64,
+        color="Black",
     )
     captured = capsys.readouterr()
     # В выводе должны быть именованные параметры
@@ -326,12 +328,7 @@ def test_mixin_logs_kwargs(capsys):
 
 def test_mixin_does_not_break_initialization():
     """Миксин не должен мешать инициализации атрибутов."""
-    phone = Smartphone(
-        "iPhone", "D", 100.0, 2,
-        "High", "Pro", 128, "White"
-    )
+    phone = Smartphone("iPhone", "D", 100.0, 2, "High", "Pro", 128, "White")
     assert phone.name == "iPhone"
     assert phone.price == 100.0
     assert phone.model == "Pro"
-
-

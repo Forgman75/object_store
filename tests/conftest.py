@@ -114,11 +114,13 @@ class ConcreteProduct(BaseProduct):
         else:
             self.__price = new_price
 
-
     def __add__(self, other):
-        """Магический метод сложения. Возвращает сумму произведений цены на количество."""
+        """Магический метод сложения. Возвращает сумму произведений цены
+        на количество."""
         if type(self) is type(other):
-            return (self.price * self.quantity) + (other.price * other.quantity)
+            return (self.price * self.quantity) + (
+                other.price * other.quantity
+            )
         raise TypeError("Складывать можно только товары одного типа")
 
 
@@ -142,15 +144,14 @@ class AnotherProduct(BaseProduct):
         else:
             self.__price = new_price
 
-
     def __add__(self, other):
-        """Магический метод сложения. Возвращает сумму произведений цены на количество."""
+        """Магический метод сложения. Возвращает сумму произведений цены на
+        количество."""
         if type(self) is type(other):
-            return (self.price * self.quantity) + (other.price * other.quantity)
+            return (self.price * self.quantity) + (
+                other.price * other.quantity
+            )
         raise TypeError("Складывать можно только товары одного типа")
-
-
-
 
 
 @pytest.fixture
@@ -163,5 +164,3 @@ def concrete_product():
 def another_product():
     """Другой продукт для тестов."""
     return ConcreteProduct("Товар2", "Другое описание", 500.0, 10)
-
-

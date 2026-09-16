@@ -19,7 +19,9 @@ def test_concrete_product_initialization(concrete_product):
 
 def test_extra_args_kwargs_are_accepted():
     """BaseProduct принимает *args и **kwargs без ошибок."""
-    product = ConcreteProduct("Test", "Desc", 100.0, 1, extra_arg="value", another=42)
+    product = ConcreteProduct(
+        "Test", "Desc", 100.0, 1, extra_arg="value", another=42
+    )
     assert product.name == "Test"
     assert product.price == 100.0
 
@@ -37,6 +39,7 @@ def test_another_product_is_subclass():
 def test_base_product_is_abc():
     """BaseProduct является абстрактным классом."""
     from abc import ABC
+
     assert issubclass(BaseProduct, ABC)
 
 
@@ -80,7 +83,8 @@ def test_price_is_private(concrete_product):
 
 
 def test_add_same_type_products(concrete_product, another_product):
-    """Сложение товаров одного типа возвращает сумму произведений цены на количество."""
+    """Сложение товаров одного типа возвращает сумму произведений цены
+    на количество."""
     result = concrete_product + another_product
     expected = (1000.0 * 5) + (500.0 * 10)  # 5000 + 5000 = 10000
     assert result == expected
@@ -89,7 +93,9 @@ def test_add_same_type_products(concrete_product, another_product):
 def test_add_different_type_products_raises_error(concrete_product):
     """Сложение товаров разных типов выбрасывает TypeError."""
     another = AnotherProduct("Other", "Desc", 200.0, 3)
-    with pytest.raises(TypeError, match="Складывать можно только товары одного типа"):
+    with pytest.raises(
+        TypeError, match="Складывать можно только товары одного типа"
+    ):
         _ = concrete_product + another
 
 
@@ -129,9 +135,3 @@ def test_str_method_returns_string(concrete_product):
     """__str__ возвращает строку."""
     result = str(concrete_product)
     assert isinstance(result, str)
-
-
-
-
-
-

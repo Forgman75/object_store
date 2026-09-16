@@ -214,7 +214,7 @@ def test_add_valid_products(
 
 def test_add_invalid_products(sample3_category):
     """Проверка, что метод выбрасывает TypeError при добавлении
-      недопустимых типов"""
+    недопустимых типов"""
     invalid_items = ["Строка", 123, {"name": "Словарь"}, None, [1, 2, 3]]
 
     for item in invalid_items:
@@ -263,15 +263,16 @@ def test_order_creation_with_auto_name(sample2_smartphone):
     order = Order(sample2_smartphone, 2)
 
     assert "iPhone 15" in order.name
-    assert "2" in order.description or sample2_smartphone.name in order.description
+    assert (
+        "2" in order.description
+        or sample2_smartphone.name in order.description
+    )
 
 
 def test_order_creation_with_custom_name(sample_smartphone):
     """Можно передать свои name и description."""
     order = Order(
-        sample_smartphone, 3,
-        name="Заказ №42",
-        description="Подарок другу"
+        sample_smartphone, 3, name="Заказ №42", description="Подарок другу"
     )
     assert order.name == "Заказ №42"
     assert order.description == "Подарок другу"
@@ -338,3 +339,21 @@ def test_order_contains_only_one_product(sample_smartphone):
     assert order.product is sample_smartphone
 
 
+def test_both_have_same_base_attributes(sample_smartphone):
+    """У Order и Category есть одинаковые атрибуты name и description."""
+    cat = Category("Техника", "Описание категории")
+    order = Order(
+        sample_smartphone, 1, name="Заказ", description="Описание заказа"
+    )
+
+    assert hasattr(cat, "name") and hasattr(order, "name")
+    assert hasattr(cat, "description") and hasattr(order, "description")
+
+    assert cat.name == "Техника"
+    assert order.name == "Заказ"
+
+
+def test_both_share_abc_ancestor():
+    """Оба класса имеют общего предка BaseInfo."""
+    assert BaseInfo in Category.__mro__
+    assert BaseInfo in Order.__mro__
