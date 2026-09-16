@@ -162,6 +162,6 @@ def concrete_product():
 @pytest.fixture
 def another_product():
     """Другой продукт для тестов."""
-    return AnotherProduct("Товар2", "Другое описание", 500.0, 10)
+    return ConcreteProduct("Товар2", "Другое описание", 500.0, 10)
 
 

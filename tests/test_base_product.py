@@ -45,3 +45,93 @@ def test_instance_check(concrete_product):
     assert isinstance(concrete_product, BaseProduct)
 
 
+def test_price_getter(concrete_product):
+    """Геттер price возвращает корректное значение."""
+    assert concrete_product.price == 1000.0
+
+
+def test_price_setter_valid_value(concrete_product):
+    """Сеттер принимает положительную цену."""
+    concrete_product.price = 2000.0
+    assert concrete_product.price == 2000.0
+
+
+def test_price_setter_zero_value(concrete_product, capsys):
+    """Сеттер отклоняет нулевую цену."""
+    concrete_product.price = 0
+    captured = capsys.readouterr()
+    assert "Цена не должна быть нулевая или отрицательная" in captured.out
+    assert concrete_product.price == 1000.0  # Цена не изменилась
+
+
+def test_price_setter_negative_value(concrete_product, capsys):
+    """Сеттер отклоняет отрицательную цену."""
+    concrete_product.price = -500.0
+    captured = capsys.readouterr()
+    assert "Цена не должна быть нулевая или отрицательная" in captured.out
+    assert concrete_product.price == 1000.0  # Цена не изменилась
+
+
+def test_price_is_private(concrete_product):
+    """Цена хранится в приватном атрибуте __price."""
+    # Проверяем, что прямой атрибут __price недоступен извне
+    with pytest.raises(AttributeError):
+        _ = concrete_product.__price
+
+
+def test_add_same_type_products(concrete_product, another_product):
+    """Сложение товаров одного типа возвращает сумму произведений цены на количество."""
+    result = concrete_product + another_product
+    expected = (1000.0 * 5) + (500.0 * 10)  # 5000 + 5000 = 10000
+    assert result == expected
+
+
+def test_add_different_type_products_raises_error(concrete_product):
+    """Сложение товаров разных типов выбрасывает TypeError."""
+    another = AnotherProduct("Other", "Desc", 200.0, 3)
+    with pytest.raises(TypeError, match="Складывать можно только товары одного типа"):
+        _ = concrete_product + another
+
+
+def test_add_with_non_product_raises_error(concrete_product):
+    """Сложение с объектом не-Product выбрасывает TypeError."""
+    with pytest.raises(TypeError):
+        _ = concrete_product + "строка"
+
+    with pytest.raises(TypeError):
+        _ = concrete_product + 123
+
+
+def test_add_commutative(concrete_product, another_product):
+    """Сложение коммутативно: a + b == b + a."""
+    result1 = concrete_product + another_product
+    result2 = another_product + concrete_product
+    assert result1 == result2
+
+
+def test_add_with_zero_quantity():
+    """Сложение с товаром нулевого количества."""
+    product1 = ConcreteProduct("P1", "D1", 100.0, 5)
+    product2 = ConcreteProduct("P2", "D2", 200.0, 0)
+    result = product1 + product2
+    assert result == 500.0  # Только первый товар учитывается
+
+
+def test_str_method_implemented_in_concrete_class(concrete_product):
+    """Конкретный класс реализует __str__."""
+    result = str(concrete_product)
+    assert "Товар1" in result
+    assert "1000.0" in result
+    assert "5" in result
+
+
+def test_str_method_returns_string(concrete_product):
+    """__str__ возвращает строку."""
+    result = str(concrete_product)
+    assert isinstance(result, str)
+
+
+
+
+
+
