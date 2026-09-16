@@ -1,5 +1,6 @@
 from src.products import Product
 from src.base_info import BaseInfo
+from typing import Optional
 
 
 class Category(BaseInfo):
@@ -9,7 +10,7 @@ class Category(BaseInfo):
     product_count = 0
 
     def __init__(
-        self, name: str, description: str, products: list[Product] | None
+        self, name: str, description: str, products: Optional[list[Product]]=None
     ):
 
         super().__init__(name, description)
@@ -99,6 +100,12 @@ class Order(BaseInfo):
     """
 
     def __init__(self, product: Product, quantity: int, name: str = "", description: str = ""):
+
+        if not isinstance(product, Product):
+            raise TypeError("В заказе может быть указан только товар класса Product или его наследников")
+        if quantity <= 0:
+            raise ValueError("Количество товара должно быть больше нуля")
+        
         # Если имя/описание не переданы — формируем их автоматически
         if not name:
             name = f"Заказ на {product.name}"
@@ -106,12 +113,7 @@ class Order(BaseInfo):
             description = f"Покупка товара '{product.name}' в количестве {quantity} шт."
 
         super().__init__(name, description)
-
-        if not isinstance(product, Product):
-            raise TypeError("В заказе может быть указан только товар класса Product или его наследников")
-        if quantity <= 0:
-            raise ValueError("Количество товара должно быть больше нуля")
-
+        
         self.product = product
         self.quantity = quantity
 
