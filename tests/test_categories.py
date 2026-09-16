@@ -1,6 +1,7 @@
 import pytest
 from src.products import Product
-from src.categories import Category, CategoryIterator
+from src.categories import Category, CategoryIterator, Order
+from src.base_info import BaseInfo
 
 
 def test_category_initialization(sample_products):
@@ -225,3 +226,115 @@ def test_add_invalid_products(sample3_category):
             ),
         ):
             sample3_category.add_product(item)
+
+
+def test_cannot_instantiate_base_info_directly():
+    """BaseInfo — абстрактный, создать его напрямую нельзя."""
+    with pytest.raises(TypeError):
+        BaseInfo("name", "description")
+
+
+def test_category_is_subclass_of_base_info():
+    """Category наследуется от BaseInfo."""
+    assert issubclass(Category, BaseInfo)
+
+
+def test_order_is_subclass_of_base_info():
+    """Order наследуется от BaseInfo."""
+    assert issubclass(Order, BaseInfo)
+
+
+def test_category_has_name_and_description():
+    """У Category есть атрибуты name и description из BaseInfo."""
+    cat = Category("Электроника", "Техника")
+    assert cat.name == "Электроника"
+    assert cat.description == "Техника"
+
+
+def test_order_has_name_and_description(sample_smartphone):
+    """У Order есть атрибуты name и description из BaseInfo."""
+    order = Order(sample_smartphone, 2)
+    assert hasattr(order, "name")
+    assert hasattr(order, "description")
+
+
+def test_order_creation_with_auto_name(sample2_smartphone):
+    """Если name/description не переданы, они формируются автоматически."""
+    order = Order(sample2_smartphone, 2)
+
+    assert "iPhone 15" in order.name
+    assert "2" in order.description or sample2_smartphone.name in order.description
+
+
+def test_order_creation_with_custom_name(sample_smartphone):
+    """Можно передать свои name и description."""
+    order = Order(
+        sample_smartphone, 3,
+        name="Заказ №42",
+        description="Подарок другу"
+    )
+    assert order.name == "Заказ №42"
+    assert order.description == "Подарок другу"
+
+
+def test_order_total_amount(sample2_smartphone):
+    """Итоговая стоимость = цена × количество."""
+    order = Order(sample2_smartphone, 3)
+    assert order.total_amount == 100000.0 * 3
+
+
+def test_order_total_amount_recalculated_on_price_change(sample2_smartphone):
+    """При изменении цены товара total_amount пересчитывается."""
+    order = Order(sample2_smartphone, 2)
+    assert order.total_amount == 200000.0
+
+    sample2_smartphone.price = 120000.0
+    assert order.total_amount == 240000.0  # Автоматический пересчёт
+
+
+def test_order_with_lawn_grass(sample_grass):
+    """Заказ можно создать и для LawnGrass."""
+    order = Order(sample_grass, 10)
+    assert order.total_amount == 500.0 * 10
+
+
+def test_order_rejects_non_product():
+    """Нельзя создать заказ с объектом, не являющимся Product."""
+    with pytest.raises(TypeError):
+        Order("не товар", 5)
+
+    with pytest.raises(TypeError):
+        Order(12345, 1)
+
+
+def test_order_rejects_zero_quantity(sample_smartphone):
+    """Нельзя создать заказ с количеством 0."""
+    with pytest.raises(ValueError):
+        Order(sample_smartphone, 0)
+
+
+def test_order_rejects_negative_quantity(sample_smartphone):
+    """Нельзя создать заказ с отрицательным количеством."""
+    with pytest.raises(ValueError):
+        Order(sample_smartphone, -5)
+
+
+def test_order_str_representation(sample2_smartphone):
+    """Проверяем строковое представление заказа."""
+    order = Order(sample2_smartphone, 2, name="Заказ №1")
+    result = str(order)
+
+    assert "Заказ №1" in result
+    assert "iPhone 15" in result
+    assert "2 шт." in result
+    assert "200000.0 руб." in result
+
+
+def test_order_contains_only_one_product(sample_smartphone):
+    """В заказе может быть только один товар — проверяем, что нет списка."""
+    order = Order(sample_smartphone, 1)
+    # product — это одиночный объект, а не список
+    assert not isinstance(order.product, list)
+    assert order.product is sample_smartphone
+
+
