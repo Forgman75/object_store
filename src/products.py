@@ -1,20 +1,32 @@
-class Product:
-    """Класс, представляющий товар."""
+from src.base_product import BaseProduct
 
-    def __init__(
-        self,
-        name: str,
-        description: str,
-        price: float,
-        quantity: int,
-        color: str = "",
-        **kwargs,
-    ):
-        self.name = name
-        self.description = description
-        self.__price = price
-        self.quantity = quantity
-        self.color = color
+
+class LogCreationMixin:
+    """
+    Миксин реализует конструктор и логирует создание объекта.
+    """
+
+    def __init__(self, *args, **kwargs):
+        # Получаем имя именно того класса, объект которого создается
+        class_name = self.__class__.__name__
+
+        # Преобразуем аргументы в их строковое представление (repr)
+        args_repr = [repr(arg) for arg in args]
+        kwargs_repr = [f"{k}={repr(v)}" for k, v in kwargs.items()]
+
+        # Собираем все параметры в одну строку через запятую
+        params = ", ".join(args_repr + kwargs_repr)
+
+        # Печатаем информацию в консоль
+        print(f"{class_name}({params})")
+
+        # Передаем управление и ВСЕ аргументы дальше по цепочке MRO
+        #  (в BaseProduct)
+        super().__init__(*args, **kwargs)
+
+
+class Product(LogCreationMixin, BaseProduct):
+    """Класс, представляющий товар."""
 
     @classmethod
     def new_product(
@@ -72,9 +84,12 @@ class Product:
         return f"{self.name}, {self.price} руб. Остаток: {self.quantity} шт."
 
     def __add__(self, other):
-        """Магический метод сложения. Возвращает сумму произведений цены на количество."""
+        """Магический метод сложения. Возвращает сумму произведений цены
+        на количество."""
         if type(self) is type(other):
-            return (self.price * self.quantity) + (other.price * other.quantity)
+            return (self.price * self.quantity) + (
+                other.price * other.quantity
+            )
         raise TypeError("Складывать можно только товары одного типа")
 
 
@@ -93,7 +108,17 @@ class Smartphone(Product):
         color: str,
         **kwargs,
     ):
-        super().__init__(name, description, price, quantity, color)
+        super().__init__(
+            name=name,
+            description=description,
+            price=price,
+            quantity=quantity,
+            efficiency=efficiency,
+            model=model,
+            memory=memory,
+            color=color,
+            **kwargs,
+        )
         self.efficiency = efficiency
         self.model = model
         self.memory = memory
@@ -135,7 +160,16 @@ class LawnGrass(Product):
         color: str,
         **kwargs,
     ):
-        super().__init__(name, description, price, quantity, color)
+        super().__init__(
+            name=name,
+            description=description,
+            price=price,
+            quantity=quantity,
+            country=country,
+            germination_period=germination_period,
+            color=color,
+            **kwargs,
+        )
         self.country = country
         self.germination_period = germination_period
 
