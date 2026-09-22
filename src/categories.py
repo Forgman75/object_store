@@ -52,7 +52,7 @@ class Category(BaseInfo):
         """Количество товаров в данной категории."""
         return len(self.__products)
 
-    def average_price(self) -> float:
+    def middle_price(self) -> float:
         """
         Подсчитывает средний ценник всех товаров в категории.
         
