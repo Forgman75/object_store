@@ -1,6 +1,7 @@
 import pytest
 import re
 from src.products import Product, Smartphone, LawnGrass
+from src.base_product import ProductZeroQuantityError
 
 
 def test_price_getter():
@@ -332,3 +333,18 @@ def test_mixin_does_not_break_initialization():
     assert phone.name == "iPhone"
     assert phone.price == 100.0
     assert phone.model == "Pro"
+
+
+def test_zero_quantity_raises_custom_error():
+    """Создание товара с quantity=0 вызывает ProductZeroQuantityError."""
+    with pytest.raises(ProductZeroQuantityError) as exc_info:
+        Smartphone("iPhone", "Чёрный", 100000.0, 0, "Высокая", "15", 128, "Чёрный")
+    assert "нулевым количеством" in str(exc_info.value)
+
+
+def test_zero_quantity_lawn_grass():
+    """То же самое для LawnGrass."""
+    with pytest.raises(ProductZeroQuantityError):
+        LawnGrass("Трава", "Описание", 100.0, 0, "Россия", 5, "Зелёный")
+
+
