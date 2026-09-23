@@ -1,7 +1,8 @@
 import pytest
-from src.products import Product
+from src.products import Product, Smartphone, LawnGrass
 from src.categories import Category, CategoryIterator, Order
 from src.base_info import BaseInfo
+from src.base_product import ProductZeroQuantityError
 
 
 def test_category_initialization(sample_products):
@@ -357,3 +358,62 @@ def test_both_share_abc_ancestor():
     """Оба класса имеют общего предка BaseInfo."""
     assert BaseInfo in Category.__mro__
     assert BaseInfo in Order.__mro__
+
+
+def test_average_price_with_products(category_with_products):
+    """Средний ценник для категории с товарами."""
+    # (100000 + 500) / 2 = 50250.0
+    assert category_with_products.middle_price() == 50250.0
+
+
+def test_average_price_empty_category(empty_category):
+    """Средний ценник пустой категории — 0."""
+    assert empty_category.middle_price() == 0
+
+
+def test_try_except_else_finally_success(capsys):
+    """Проверяем работу try/except/else/finally при успехе."""
+    category = Category("Тест", "Описание")
+    try:
+        product = Smartphone("iPhone", "Чёрный", 100000.0, 5, "Высокая", "15", 128, "Чёрный")
+        category.add_product(product)
+    except ProductZeroQuantityError:
+        print("Ошибка")
+    else:
+        print("Товар добавлен")
+    finally:
+        print("Обработка завершена")
+
+    captured = capsys.readouterr()
+    assert "Товар добавлен" in captured.out
+    assert "Обработка завершена" in captured.out
+    assert "Ошибка" not in captured.out
+
+
+def test_try_except_else_finally_failure(capsys):
+    """Проверяем работу try/except/else/finally при ошибке."""
+    category = Category("Тест", "Описание")
+    try:
+        product = Smartphone("iPhone", "Чёрный", 100000.0, 0, "Высокая", "15", 128, "Чёрный")
+        category.add_product(product)
+    except ProductZeroQuantityError:
+        print("Ошибка")
+    else:
+        print("Товар добавлен")
+    finally:
+        print("Обработка завершена")
+
+    captured = capsys.readouterr()
+    assert "Ошибка" in captured.out
+    assert "Обработка завершена" in captured.out
+    assert "Товар добавлен" not in captured.out
+
+
+@pytest.mark.parametrize("quantity", [0])
+def test_parametrized_zero_quantity(quantity):
+    """Параметризованный тест для нулевого количества."""
+    with pytest.raises(ProductZeroQuantityError):
+        LawnGrass("Трава", "Описание", 100.0, quantity, "Россия", 5, "Зелёный")
+
+
+
