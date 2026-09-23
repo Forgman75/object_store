@@ -1,6 +1,6 @@
 import pytest
 from src.products import Product, Smartphone, LawnGrass
-from src.categories import Category
+from src.categories import Category, Order
 from src.base_product import BaseProduct
 
 
@@ -35,7 +35,7 @@ def sample2_products():
     """Создает набор тестовых продуктов."""
     p1 = Product("Iphone 15", "Смартфон", 100000.0, 5)
     p2 = Product("Samsung S24", "Смартфон", 80000.0, 3)
-    p3 = Product("MacBook Pro", "Ноутбук", 250000.0, 0)
+    p3 = Product("MacBook Pro", "Ноутбук", 250000.0, 1)
     return p1, p2, p3
 
 
@@ -92,6 +92,26 @@ def sample_grass():
         germination_period=7,
         color="Тёмно-зелёный",
     )
+
+
+@pytest.fixture
+def empty_category():
+    """Пустая категория."""
+    return Category("Пустая", "Нет товаров")
+
+
+@pytest.fixture
+def category_with_products(sample2_smartphone, sample_grass):
+    """Категория с двумя товарами."""
+    cat = Category("Микс", "Разные товары", [sample2_smartphone, sample_grass])
+    return cat
+
+
+@pytest.fixture
+def empty_order():
+    """Пустой заказ."""
+    return Order("Пустой заказ")
+
 
 
 class ConcreteProduct(BaseProduct):

@@ -141,7 +141,7 @@ def test_category_str_with_products(sample2_category):
     """Проверка строкового представления категории с товарами.
     Считается сумма quantity, а не количество наименований."""
     # 5 (Iphone) + 3 (Samsung) + 0 (MacBook) = 8
-    assert str(sample2_category) == "Электроника, количество продуктов: 8 шт."
+    assert str(sample2_category) == "Электроника, количество продуктов: 9 шт."
 
 
 def test_category_str_empty():
