@@ -113,6 +113,50 @@ def empty_order():
     return Order("Пустой заказ")
 
 
+@pytest.fixture
+def valid_smartphone_data():
+    """Валидные данные для смартфона."""
+    return dict(
+        name="iPhone 15",
+        description="Чёрный",
+        price=100000.0,
+        quantity=5,
+        efficiency="Высокая",
+        model="15 Pro",
+        memory=256,
+        color="Чёрный",
+    )
+
+
+@pytest.fixture
+def valid_lawn_grass_data():
+    """Валидные данные для газонной травы."""
+    return dict(
+        name="Газонная трава",
+        description="Зелёная",
+        price=500.0,
+        quantity=20,
+        country="Россия",
+        germination_period=7,
+        color="Тёмно-зелёный",
+    )
+
+
+@pytest.fixture
+def zero_quantity_smartphone_data(valid_smartphone_data):
+    """Данные смартфона с quantity=0."""
+    data = valid_smartphone_data.copy()
+    data["quantity"] = 0
+    return data
+
+
+@pytest.fixture
+def zero_quantity_lawn_grass_data(valid_lawn_grass_data):
+    """Данные газонной травы с quantity=0."""
+    data = valid_lawn_grass_data.copy()
+    data["quantity"] = 0
+    return data
+
 
 class ConcreteProduct(BaseProduct):
     """Конкретная реализация BaseProduct для тестирования."""
