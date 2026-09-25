@@ -16,12 +16,14 @@ def safe_add_to_category(category: Category, product_class, **kwargs):
     except ProductZeroQuantityError as e:
         print(f"Ошибка: {e}")
     else:
-        print(f"Товар добавлен")
+        print("Товар добавлен")
     finally:
-        print(f"Обработка добавления товара завершена\n")
+        print("Обработка добавления товара завершена\n")
 
 
-def safe_add_to_order(product_class: Product, order_quantity: int, **kwargs) -> Order | None:
+def safe_add_to_order(
+    product_class: Product, order_quantity: int, **kwargs
+) -> Order | None:
     """
     Безопасно добавляет товар в заказ.
     """
@@ -35,11 +37,11 @@ def safe_add_to_order(product_class: Product, order_quantity: int, **kwargs) -> 
         print(f"Ошибка при создании заказа: {e}")
         return None
     else:
-        print(f"Товар добавлен")
+        print("Товар добавлен")
         return order
 
     finally:
-        print(f"Обработка добавления товара завершена\n")
+        print("Обработка добавления товара завершена\n")
 
 
 if __name__ == "__main__":
@@ -293,7 +295,8 @@ if __name__ == "__main__":
 
     print("\n--- Проверка общих свойств ---")
     print(
-        f"Категория: name='{electronics.name}', description='{electronics.description}'"
+        f"Категория: name='{electronics.name}',"
+        f" description='{electronics.description}'"
     )
     print(
         f"Заказ:     name='{order1.name}', description='{order1.description}'"
@@ -304,45 +307,74 @@ if __name__ == "__main__":
     print(f"Order наследует BaseInfo:    {issubclass(Order, BaseInfo)}")
 
     try:
-        product_invalid = Product("Бракованный товар", "Неверное количество", 1000.0, 0)
+        product_invalid = Product(
+            "Бракованный товар", "Неверное количество", 1000.0, 0
+        )
     except ValueError as e:
         print(
-            "Возникла ошибка ValueError прерывающая работу программы при попытке добавить продукт с нулевым количеством")
+            "Возникла ошибка ValueError прерывающая работу программы"
+            "при попытке добавить продукт с нулевым количеством"
+        )
     else:
-        print("Не возникла ошибка ValueError при попытке добавить продукт с нулевым количеством")
+        print(
+            "Не возникла ошибка ValueError при попытке добавить продукт"
+            "с нулевым количеством"
+        )
 
-    product1 = Product("Samsung Galaxy S23 Ultra", "256GB, Серый цвет, 200MP камера", 180000.0, 5)
+    product1 = Product(
+        "Samsung Galaxy S23 Ultra",
+        "256GB, Серый цвет, 200MP камера",
+        180000.0,
+        5,
+    )
     product2 = Product("Iphone 15", "512GB, Gray space", 210000.0, 8)
     product3 = Product("Xiaomi Redmi Note 11", "1024GB, Синий", 31000.0, 14)
 
-    category1 = Category("Смартфоны", "Категория смартфонов", [product1, product2, product3])
+    category1 = Category(
+        "Смартфоны", "Категория смартфонов", [product1, product2, product3]
+    )
 
     print(category1.middle_price())
 
-    category_empty = Category("Пустая категория", "Категория без продуктов", [])
+    category_empty = Category(
+        "Пустая категория", "Категория без продуктов", []
+    )
     print(category_empty.middle_price())
 
     phones_category = Category("Смартфоны", "Мобильные устройства")
     # Создаём товар
     grass = LawnGrass(
-        "Газонная трава", "Зелёная", 500.0, 20,
-        "Россия", 7, "Тёмно-зелёный"
+        "Газонная трава", "Зелёная", 500.0, 20, "Россия", 7, "Тёмно-зелёный"
     )
     # Создаём заказ на этот товар
     my_order = Order(grass, quantity=3)
-    
+
     print("Успешное добавление в Category")
     safe_add_to_category(
-        phones_category, Smartphone,
-        name="iPhone 15", description="Чёрный", price=100000.0, quantity=5,
-        efficiency="Высокая", model="15 Pro", memory=256, color="Чёрный"
+        phones_category,
+        Smartphone,
+        name="iPhone 15",
+        description="Чёрный",
+        price=100000.0,
+        quantity=5,
+        efficiency="Высокая",
+        model="15 Pro",
+        memory=256,
+        color="Чёрный",
     )
 
     print("Товар с quantity=0 в Category")
     safe_add_to_category(
-        phones_category, Smartphone,
-        name="iPhone 15 Mini", description="Белый", price=50000.0, quantity=0,
-        efficiency="Средняя", model="15 Mini", memory=128, color="Белый"
+        phones_category,
+        Smartphone,
+        name="iPhone 15 Mini",
+        description="Белый",
+        price=50000.0,
+        quantity=0,
+        efficiency="Средняя",
+        model="15 Mini",
+        memory=128,
+        color="Белый",
     )
 
     print("Успешное добавление в Order")
@@ -384,11 +416,7 @@ if __name__ == "__main__":
         color="Зелёный",
     )
 
-
     print("Категория:")
     print(phones_category)
     print("\nЗаказ:")
     print(my_order, order1, order2, order3)
-
-
-

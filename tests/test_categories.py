@@ -316,17 +316,15 @@ def test_order_rejects_zero_quantity(sample_smartphone):
 
 
 def test_create_order_with_zero_quantity_product_raises(
-        empty_category, zero_quantity_lawn_grass_data
-    ):
+    empty_category, zero_quantity_lawn_grass_data
+):
     """Создание заказа на товар с quantity=0 вызывает ProductZeroQuantityError."""
     with pytest.raises(ProductZeroQuantityError):
         product = LawnGrass(**zero_quantity_lawn_grass_data)
         Order(product, quantity=3)
 
 
-def test_order_error_is_value_error(
-        zero_quantity_lawn_grass_data
-    ):
+def test_order_error_is_value_error(zero_quantity_lawn_grass_data):
     """ProductZeroQuantityError перехватывается как ValueError."""
     with pytest.raises(ValueError):
         product = LawnGrass(**zero_quantity_lawn_grass_data)
@@ -393,7 +391,9 @@ def test_try_except_else_finally_success(capsys):
     """Проверяем работу try/except/else/finally при успехе."""
     category = Category("Тест", "Описание")
     try:
-        product = Smartphone("iPhone", "Чёрный", 100000.0, 5, "Высокая", "15", 128, "Чёрный")
+        product = Smartphone(
+            "iPhone", "Чёрный", 100000.0, 5, "Высокая", "15", 128, "Чёрный"
+        )
         category.add_product(product)
     except ProductZeroQuantityError:
         print("Ошибка")
@@ -412,7 +412,9 @@ def test_try_except_else_finally_failure(capsys):
     """Проверяем работу try/except/else/finally при ошибке."""
     category = Category("Тест", "Описание")
     try:
-        product = Smartphone("iPhone", "Чёрный", 100000.0, 0, "Высокая", "15", 128, "Чёрный")
+        product = Smartphone(
+            "iPhone", "Чёрный", 100000.0, 0, "Высокая", "15", 128, "Чёрный"
+        )
         category.add_product(product)
     except ProductZeroQuantityError:
         print("Ошибка")
@@ -434,14 +436,12 @@ def test_parametrized_zero_quantity(quantity):
         LawnGrass("Трава", "Описание", 100.0, quantity, "Россия", 5, "Зелёный")
 
 
-def test_category_not_modified_on_error(empty_category, zero_quantity_smartphone_data):
+def test_category_not_modified_on_error(
+    empty_category, zero_quantity_smartphone_data
+):
     """При ошибке создания товара категория НЕ должна измениться."""
     initial_count = len(empty_category._Category__products)
     with pytest.raises(ProductZeroQuantityError):
         product = Smartphone(**zero_quantity_smartphone_data)
         empty_category.add_product(product)
     assert len(empty_category._Category__products) == initial_count
-
-
-
-
