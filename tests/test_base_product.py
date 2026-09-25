@@ -134,6 +134,11 @@ def test_is_exception_subclass():
     assert issubclass(ProductZeroQuantityError, Exception)
 
 
+def test_is_subclass_of_value_error():
+    """ProductZeroQuantityError наследуется от ValueError."""
+    assert issubclass(ProductZeroQuantityError, ValueError)
+
+
 def test_default_message():
     """Сообщение по умолчанию корректное."""
     error = ProductZeroQuantityError()
@@ -151,3 +156,9 @@ def test_can_be_raised_and_caught():
     with pytest.raises(ProductZeroQuantityError) as exc_info:
         raise ProductZeroQuantityError()
     assert "нулевым количеством" in str(exc_info.value)
+
+
+def test_can_be_caught_as_value_error():
+    """Исключение можно перехватить как ValueError."""
+    with pytest.raises(ValueError):
+        raise ProductZeroQuantityError()
