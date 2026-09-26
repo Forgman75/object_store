@@ -336,7 +336,7 @@ def test_mixin_does_not_break_initialization():
 
 
 def test_zero_quantity_raises_custom_error():
-    """Создание товара с quantity=0 вызывает ProductZeroQuantityError."""
+    """Создание товара с quantity=0 вызывает ValueError."""
     with pytest.raises(ValueError) as exc_info:
         Smartphone(
             "iPhone", "Чёрный", 100000.0, 0, "Высокая", "15", 128, "Чёрный"
