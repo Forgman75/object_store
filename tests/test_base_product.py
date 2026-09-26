@@ -1,5 +1,5 @@
 import pytest
-from src.base_product import BaseProduct
+from src.base_product import BaseProduct, ProductZeroQuantityError
 from tests.conftest import ConcreteProduct, AnotherProduct
 
 
@@ -115,14 +115,6 @@ def test_add_commutative(concrete_product, another_product):
     assert result1 == result2
 
 
-def test_add_with_zero_quantity():
-    """Сложение с товаром нулевого количества."""
-    product1 = ConcreteProduct("P1", "D1", 100.0, 5)
-    product2 = ConcreteProduct("P2", "D2", 200.0, 0)
-    result = product1 + product2
-    assert result == 500.0  # Только первый товар учитывается
-
-
 def test_str_method_implemented_in_concrete_class(concrete_product):
     """Конкретный класс реализует __str__."""
     result = str(concrete_product)
@@ -135,3 +127,38 @@ def test_str_method_returns_string(concrete_product):
     """__str__ возвращает строку."""
     result = str(concrete_product)
     assert isinstance(result, str)
+
+
+def test_is_exception_subclass():
+    """Исключение наследуется от Exception."""
+    assert issubclass(ProductZeroQuantityError, Exception)
+
+
+def test_is_subclass_of_value_error():
+    """ProductZeroQuantityError наследуется от ValueError."""
+    assert issubclass(ProductZeroQuantityError, ValueError)
+
+
+def test_default_message():
+    """Сообщение по умолчанию корректное."""
+    error = ProductZeroQuantityError()
+    assert str(error) == "Товар с нулевым количеством не может быть добавлен"
+
+
+def test_custom_message():
+    """Можно передать своё сообщение."""
+    error = ProductZeroQuantityError("Моё сообщение")
+    assert str(error) == "Моё сообщение"
+
+
+def test_can_be_raised_and_caught():
+    """Исключение можно выбросить и перехватить."""
+    with pytest.raises(ProductZeroQuantityError) as exc_info:
+        raise ProductZeroQuantityError()
+    assert "нулевым количеством" in str(exc_info.value)
+
+
+def test_can_be_caught_as_value_error():
+    """Исключение можно перехватить как ValueError."""
+    with pytest.raises(ValueError):
+        raise ProductZeroQuantityError()

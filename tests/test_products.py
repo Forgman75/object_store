@@ -1,6 +1,7 @@
 import pytest
 import re
 from src.products import Product, Smartphone, LawnGrass
+from src.base_product import ProductZeroQuantityError
 
 
 def test_price_getter():
@@ -193,12 +194,6 @@ def test_product_str_standard(sample2_products):
     assert str(p2) == "Samsung S24, 80000.0 руб. Остаток: 3 шт."
 
 
-def test_product_str_zero_quantity(sample2_products):
-    """Проверка строкового представления продукта с нулевым остатком."""
-    _, _, p3 = sample2_products
-    assert str(p3) == "MacBook Pro, 250000.0 руб. Остаток: 0 шт."
-
-
 def test_add_two_products(sample2_products):
     """Проверка сложения двух продуктов (сумма их стоимости на складе)."""
     p1, p2, _ = sample2_products
@@ -297,6 +292,12 @@ def test_lawn_grass_creation_logs_to_console(capsys):
     assert "500.0" in captured.out
 
 
+def test_add_different_types_raises(sample_smartphone, sample_lawn_grass):
+    """Сложение товаров разных типов вызывает TypeError."""
+    with pytest.raises(TypeError):
+        _ = sample_smartphone + sample_lawn_grass
+
+
 def test_mixin_uses_repr_for_strings(capsys):
     """Строковые параметры должны быть обёрнуты в одинарные кавычки."""
     Smartphone("Test", "Desc", 1.0, 1, "E", "M", 1, "C")
@@ -332,3 +333,18 @@ def test_mixin_does_not_break_initialization():
     assert phone.name == "iPhone"
     assert phone.price == 100.0
     assert phone.model == "Pro"
+
+
+def test_zero_quantity_raises_custom_error():
+    """Создание товара с quantity=0 вызывает ValueError."""
+    with pytest.raises(ValueError) as exc_info:
+        Smartphone(
+            "iPhone", "Чёрный", 100000.0, 0, "Высокая", "15", 128, "Чёрный"
+        )
+    assert "нулевым количеством" in str(exc_info.value)
+
+
+def test_zero_quantity_lawn_grass():
+    """То же самое для LawnGrass."""
+    with pytest.raises(ValueError):
+        LawnGrass("Трава", "Описание", 100.0, 0, "Россия", 5, "Зелёный")

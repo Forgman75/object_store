@@ -1,6 +1,20 @@
 from abc import ABC, abstractmethod
 
 
+class ProductZeroQuantityError(ValueError):
+    """Исключение, вызываемое при попытке добавить товар
+    с нулевым количеством."""
+
+    def __init__(
+        self, message="Товар с нулевым количеством не может быть добавлен"
+    ):
+        self.message = message
+        super().__init__(self.message)
+
+    def __str__(self):
+        return self.message
+
+
 class BaseProduct(ABC):
     """
     Абстрактный базовый класс
@@ -16,6 +30,7 @@ class BaseProduct(ABC):
         *args,
         **kwargs,
     ):
+
         self.name = name
         self.description = description
         self.price = price
