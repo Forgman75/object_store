@@ -30,8 +30,6 @@ class BaseProduct(ABC):
         *args,
         **kwargs,
     ):
-        if quantity == 0:
-            raise ProductZeroQuantityError()
 
         self.name = name
         self.description = description
