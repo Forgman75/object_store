@@ -52,6 +52,20 @@ class Category(BaseInfo):
         """Количество товаров в данной категории."""
         return len(self.__products)
 
+    def middle_price(self) -> float:
+        """
+        Подсчитывает средний ценник всех товаров в категории.
+
+        Складывает цены (self.price) всех товаров и делит
+        на количество товаров.
+        Если в категории нет товаров — возвращает 0.
+        """
+        if not self.__products:
+            return 0
+
+        total_price = sum(product.price for product in self.__products)
+        return total_price / len(self.__products)
+
     def __repr__(self):
         return (
             f"Category("

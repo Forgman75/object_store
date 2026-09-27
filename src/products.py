@@ -1,4 +1,4 @@
-from src.base_product import BaseProduct
+from src.base_product import BaseProduct, ProductZeroQuantityError
 
 
 class LogCreationMixin:
@@ -27,6 +27,30 @@ class LogCreationMixin:
 
 class Product(LogCreationMixin, BaseProduct):
     """Класс, представляющий товар."""
+    def __init__(
+        self,
+        name: str,
+        description: str,
+        price: float,
+        quantity: int,
+        color: str = "",
+        *args,
+        **kwargs,
+    ):
+        
+        if quantity == 0:
+            raise ProductZeroQuantityError()
+
+        super().__init__(
+            name=name,
+            description=description,
+            price=price,
+            quantity=quantity,
+            color=color,
+            *args,
+            **kwargs,
+        )
+
 
     @classmethod
     def new_product(
